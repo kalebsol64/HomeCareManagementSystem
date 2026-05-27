@@ -1,0 +1,155 @@
+
+<div id="erd" style="padding:8px 0"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+    primaryColor: dark ? '#2a2a28' : '#f1efea',
+    primaryBorderColor: dark ? '#5f5e5a' : '#b4b2a9',
+    primaryTextColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const diagram = `erDiagram
+  USERS {
+    varchar User_ID PK
+    varchar Username
+    varchar Password_Hash
+    varchar Role
+    bit     Is_Active
+    datetime Last_Login
+  }
+  ADDRESS {
+    varchar Address_ID PK
+    varchar City
+    varchar Sub_City
+    varchar Woreda
+    int     Kebele_Number
+    varchar House_Number
+    varchar Street_Name
+    varchar Landmark
+  }
+  DEMOGRAPHIC_INFO {
+    varchar Demographic_ID PK
+    varchar Full_Name
+    varchar Phone
+    varchar Email
+    int     Age
+    char    Gender
+    varchar Marital_Status
+    varchar Insurance_Provider
+    date    Contact_Date
+  }
+  PATIENT {
+    varchar Patient_ID PK
+    varchar Demographic_ID FK
+    varchar Address_ID FK
+    varchar Emergency_Contact
+    varchar Emergency_Contact_Name
+    date    Registration_Date
+    bit     Is_Active
+  }
+  HEALTHCARE_PROFESSIONAL {
+    varchar Professional_ID PK
+    varchar User_ID FK
+    varchar Demographic_ID FK
+    varchar Address_ID FK
+    varchar Profession
+    varchar Specialization
+    varchar License_Number
+    decimal Hourly_Rate
+    bit     Is_Available
+  }
+  SERVICE_CATEGORY {
+    varchar  Category_ID PK
+    varchar  Category_Name
+    decimal  Base_Rate
+    int      Duration_Required
+    varchar  Qualification_Required
+    bit      Is_Active
+  }
+  APPOINTMENT {
+    varchar  Appointment_ID PK
+    varchar  Patient_ID FK
+    varchar  Professional_ID FK
+    varchar  Category_ID FK
+    date     Appointment_Date
+    time     Appointment_Time
+    int      Duration_Hours
+    varchar  Status
+  }
+  PATIENT_MEDICAL_HISTORY {
+    varchar History_ID PK
+    varchar Patient_ID FK
+    date    Visit_Date
+    varchar Medical_Condition
+    varchar Diagnosis
+    varchar Medication_Prescribed
+    varchar Severity_Level
+    varchar Status
+  }
+  SERVICE_FEEDBACK {
+    varchar Feedback_ID PK
+    varchar Appointment_ID FK
+    int     Rating
+    varchar Comments
+    varchar Service_Satisfaction
+    date    Feedback_Date
+  }
+  PAYMENT {
+    varchar  Payment_ID PK
+    varchar  Appointment_ID FK
+    decimal  Amount
+    date     Payment_Date
+    varchar  Payment_Method
+    varchar  Status
+    varchar  Receipt_Number
+  }
+
+  USERS            ||--o{ HEALTHCARE_PROFESSIONAL : "logs in as"
+  ADDRESS          ||--o{ PATIENT                 : "lives at"
+  ADDRESS          ||--o{ HEALTHCARE_PROFESSIONAL : "resides at"
+  DEMOGRAPHIC_INFO ||--o{ PATIENT                 : "describes"
+  DEMOGRAPHIC_INFO ||--o{ HEALTHCARE_PROFESSIONAL : "describes"
+  PATIENT          ||--o{ APPOINTMENT             : "books"
+  PATIENT          ||--o{ PATIENT_MEDICAL_HISTORY : "has"
+  HEALTHCARE_PROFESSIONAL ||--o{ APPOINTMENT      : "attends"
+  SERVICE_CATEGORY ||--o{ APPOINTMENT             : "defines"
+  APPOINTMENT      ||--o| SERVICE_FEEDBACK        : "receives"
+  APPOINTMENT      ||--o| PAYMENT                 : "generates"
+`;
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+
+document.querySelectorAll('#erd svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill','stroke','stroke-width','class','style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd svg .row-rect-odd path, #erd svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke','none');
+});
+</script>
