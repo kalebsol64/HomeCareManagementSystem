@@ -333,22 +333,18 @@ public class PatientDAO {
      * Call this before addPatient() to get the next ID.
      */
     public String getNextPatientId() {
-        String sql = "SELECT MAX(Patient_ID) FROM Patient";
-
+        String sql = "SELECT MAX(CAST(SUBSTRING(Patient_ID, 4, 5) AS INT)) FROM Patient";
         try (Connection con = DBConnection.getConnection();
-             Statement st   = con.createStatement();
-             ResultSet rs   = st.executeQuery(sql)) {
-
-            if (rs.next() && rs.getString(1) != null) {
-                String last   = rs.getString(1);          // e.g. "PAT00012"
-                int    num    = Integer.parseInt(last.substring(3)); // 12
-                return String.format("PAT%05d", num + 1); // "PAT00013"
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                int maxNum = rs.getInt(1);
+                return String.format("PAT%05d", maxNum + 1);
             }
-
         } catch (SQLException e) {
             System.err.println("[PatientDAO] getNextPatientId() error: " + e.getMessage());
         }
-        return "PAT00001"; // fallback if table is empty
+        return "PAT00001";
     }
 
     // ---------------------------------------------------------------

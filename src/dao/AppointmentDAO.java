@@ -50,8 +50,10 @@ public class AppointmentDAO {
 
     public List<Appointment> getAllAppointments() {
         List<Appointment> list = new ArrayList<>();
-        String sql = SELECT_FULL + "ORDER BY a.Appointment_Date DESC, a.Appointment_Time DESC";
-
+        // ✅ FIXED — only active appointments
+        String sql = SELECT_FULL
+                + "WHERE a.Status != 'Cancelled' "
+                + "ORDER BY a.Appointment_Date DESC, a.Appointment_Time DESC";
         try (Connection con = DBConnection.getConnection();
              Statement st   = con.createStatement();
              ResultSet rs   = st.executeQuery(sql)) {
@@ -298,17 +300,14 @@ public class AppointmentDAO {
     // ---------------------------------------------------------------
 
     public String getNextAppointmentId() {
-        String sql = "SELECT MAX(Appointment_ID) FROM Appointment";
-
+        String sql = "SELECT MAX(CAST(SUBSTRING(Appointment_ID, 4, 5) AS INT)) FROM Appointment";
         try (Connection con = DBConnection.getConnection();
-             Statement st   = con.createStatement();
-             ResultSet rs   = st.executeQuery(sql)) {
-
-            if (rs.next() && rs.getString(1) != null) {
-                int num = Integer.parseInt(rs.getString(1).substring(3));
-                return String.format("APT%05d", num + 1);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                int maxNum = rs.getInt(1);
+                return String.format("APT%05d", maxNum + 1);
             }
-
         } catch (SQLException e) {
             System.err.println("[AppointmentDAO] getNextAppointmentId() error: " + e.getMessage());
         }
