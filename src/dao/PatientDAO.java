@@ -333,18 +333,61 @@ public class PatientDAO {
      * Call this before addPatient() to get the next ID.
      */
     public String getNextPatientId() {
-        String sql = "SELECT MAX(CAST(SUBSTRING(Patient_ID, 4, 5) AS INT)) FROM Patient";
+        String sql = "SELECT MAX(Patient_ID) FROM Patient";
+
         try (Connection con = DBConnection.getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            if (rs.next()) {
-                int maxNum = rs.getInt(1);
-                return String.format("PAT%05d", maxNum + 1);
+             Statement st   = con.createStatement();
+             ResultSet rs   = st.executeQuery(sql)) {
+
+            if (rs.next() && rs.getString(1) != null) {
+                String last   = rs.getString(1);          // e.g. "PAT00012"
+                int    num    = Integer.parseInt(last.substring(3)); // 12
+                return String.format("PAT%05d", num + 1); // "PAT00013"
             }
+
         } catch (SQLException e) {
             System.err.println("[PatientDAO] getNextPatientId() error: " + e.getMessage());
         }
-        return "PAT00001";
+        return "PAT00001"; // fallback if table is empty
+    }
+
+
+    /**
+     * Generates the next available Address_ID — checks MAX across the whole Address table
+     * so it never collides with existing sample data (ADD00001-ADD00015).
+     */
+    public String getNextAddressId() {
+        String sql = "SELECT MAX(Address_ID) FROM Address";
+        try (Connection con = DBConnection.getConnection();
+             Statement st   = con.createStatement();
+             ResultSet rs   = st.executeQuery(sql)) {
+            if (rs.next() && rs.getString(1) != null) {
+                int num = Integer.parseInt(rs.getString(1).substring(3));
+                return String.format("ADD%05d", num + 1);
+            }
+        } catch (SQLException e) {
+            System.err.println("[PatientDAO] getNextAddressId() error: " + e.getMessage());
+        }
+        return "ADD00001";
+    }
+
+    /**
+     * Generates the next available Demographic_ID — checks MAX across the whole table
+     * so it never collides with existing sample data (DEM00001-DEM00020).
+     */
+    public String getNextDemographicId() {
+        String sql = "SELECT MAX(Demographic_ID) FROM Demographic_Info";
+        try (Connection con = DBConnection.getConnection();
+             Statement st   = con.createStatement();
+             ResultSet rs   = st.executeQuery(sql)) {
+            if (rs.next() && rs.getString(1) != null) {
+                int num = Integer.parseInt(rs.getString(1).substring(3));
+                return String.format("DEM%05d", num + 1);
+            }
+        } catch (SQLException e) {
+            System.err.println("[PatientDAO] getNextDemographicId() error: " + e.getMessage());
+        }
+        return "DEM00001";
     }
 
     // ---------------------------------------------------------------

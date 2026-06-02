@@ -288,6 +288,43 @@ public class ProfessionalDAO {
         return "PRO00001";
     }
 
+
+    /**
+     * Generates the next available Address_ID from the Address table.
+     */
+    public String getNextAddressId() {
+        String sql = "SELECT MAX(Address_ID) FROM Address";
+        try (Connection con = DBConnection.getConnection();
+             Statement st   = con.createStatement();
+             ResultSet rs   = st.executeQuery(sql)) {
+            if (rs.next() && rs.getString(1) != null) {
+                int num = Integer.parseInt(rs.getString(1).substring(3));
+                return String.format("ADD%05d", num + 1);
+            }
+        } catch (SQLException e) {
+            System.err.println("[ProfessionalDAO] getNextAddressId() error: " + e.getMessage());
+        }
+        return "ADD00001";
+    }
+
+    /**
+     * Generates the next available Demographic_ID from the Demographic_Info table.
+     */
+    public String getNextDemographicId() {
+        String sql = "SELECT MAX(Demographic_ID) FROM Demographic_Info";
+        try (Connection con = DBConnection.getConnection();
+             Statement st   = con.createStatement();
+             ResultSet rs   = st.executeQuery(sql)) {
+            if (rs.next() && rs.getString(1) != null) {
+                int num = Integer.parseInt(rs.getString(1).substring(3));
+                return String.format("DEM%05d", num + 1);
+            }
+        } catch (SQLException e) {
+            System.err.println("[ProfessionalDAO] getNextDemographicId() error: " + e.getMessage());
+        }
+        return "DEM00001";
+    }
+
     // ---------------------------------------------------------------
     // PRIVATE HELPER — Map row
     // ---------------------------------------------------------------
