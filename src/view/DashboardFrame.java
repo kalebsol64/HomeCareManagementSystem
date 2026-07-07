@@ -37,6 +37,8 @@ public class DashboardFrame extends JFrame {
     private JButton btnPatients;
     private JButton btnProfessionals;
     private JButton btnAppointments;
+    private JButton btnPayments;
+    private JButton btnFeedback;
     private JButton activeButton;
 
     // Panels (lazy-loaded)
@@ -44,6 +46,8 @@ public class DashboardFrame extends JFrame {
     private PatientPanel    patientPanel;
     private ProfessionalPanel professionalPanel;
     private AppointmentPanel  appointmentPanel;
+    private PaymentPanel      paymentPanel;
+    private FeedbackPanel     feedbackPanel;
 
     public DashboardFrame() {
         initUI();
@@ -124,7 +128,7 @@ public class DashboardFrame extends JFrame {
 
         // App brand mini header
         JLabel brand = new JLabel("  🏥  HCMS", SwingConstants.LEFT);
-        brand.setFont(UITheme.FONT_EMOJI);
+        brand.setFont(new Font("Segoe UI", Font.BOLD, 14));
         brand.setForeground(Color.WHITE);
         brand.setBorder(new EmptyBorder(8, 16, 20, 16));
         brand.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -143,6 +147,13 @@ public class DashboardFrame extends JFrame {
         sidebar.add(btnPatients);
         sidebar.add(btnProfessionals);
         sidebar.add(btnAppointments);
+
+        sidebar.add(Box.createVerticalStrut(8));
+        sidebar.add(sidebarSectionLabel("FINANCE & QUALITY"));
+        btnPayments = sidebarButton("💳  Payments", "PAYMENTS");
+        btnFeedback = sidebarButton("⭐  Feedback",  "FEEDBACK");
+        sidebar.add(btnPayments);
+        sidebar.add(btnFeedback);
 
         // Push remaining space to bottom
         sidebar.add(Box.createVerticalGlue());
@@ -169,7 +180,7 @@ public class DashboardFrame extends JFrame {
 
     private JButton sidebarButton(String text, String panelName) {
         JButton btn = new JButton(text);
-        btn.setFont(UITheme.FONT_EMOJI);
+        btn.setFont(UITheme.FONT_SIDEBAR);
         btn.setForeground(UITheme.SIDEBAR_TEXT);
         btn.setBackground(UITheme.BG_SIDEBAR);
         btn.setHorizontalAlignment(SwingConstants.LEFT);
@@ -227,6 +238,10 @@ public class DashboardFrame extends JFrame {
         contentArea.add(patientPanel,      "PATIENTS");
         contentArea.add(professionalPanel, "PROFESSIONALS");
         contentArea.add(appointmentPanel,  "APPOINTMENTS");
+        paymentPanel  = new PaymentPanel();
+        feedbackPanel = new FeedbackPanel();
+        contentArea.add(paymentPanel,  "PAYMENTS");
+        contentArea.add(feedbackPanel, "FEEDBACK");
 
         return contentArea;
     }
@@ -238,6 +253,8 @@ public class DashboardFrame extends JFrame {
             case "PATIENTS"      -> { pageTitleLabel.setText("Patient Management");    patientPanel.refresh(); }
             case "PROFESSIONALS" -> { pageTitleLabel.setText("Professional Management"); professionalPanel.refresh(); }
             case "APPOINTMENTS"  -> { pageTitleLabel.setText("Appointment Scheduling"); appointmentPanel.refresh(); }
+            case "PAYMENTS"      -> { pageTitleLabel.setText("Payment Management");      paymentPanel.refresh(); }
+            case "FEEDBACK"      -> { pageTitleLabel.setText("Service Feedback");         feedbackPanel.refresh(); }
         }
     }
 
