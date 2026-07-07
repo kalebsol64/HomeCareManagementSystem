@@ -190,6 +190,72 @@ public class PaymentDAO {
         }
         return 0.0;
     }
+    // ---------------------------------------------------------------
+// COUNT — Total number of payments
+// ---------------------------------------------------------------
+    public int getTotalCount() {
+        String sql = "SELECT COUNT(*) FROM Payment";
+        try (Connection con = DBConnection.getConnection();
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.err.println("[PaymentDAO] getTotalCount() error: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    // ---------------------------------------------------------------
+// UPDATE — Full payment update (all fields)
+// ---------------------------------------------------------------
+    public boolean updatePayment(Payment p) {
+        String sql = "UPDATE Payment SET "
+                + "Appointment_ID = ?, Amount = ?, Payment_Date = ?, "
+                + "Payment_Method = ?, Status = ?, "
+                + "Transaction_Reference = ?, Receipt_Number = ? "
+                + "WHERE Payment_ID = ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, p.getAppointmentId());
+            ps.setDouble(2, p.getAmount());
+            ps.setString(3, p.getPaymentDate());
+            ps.setString(4, p.getPaymentMethod());
+            ps.setString(5, p.getStatus());
+            ps.setString(6, p.getTransactionReference());
+            ps.setString(7, p.getReceiptNumber());
+            ps.setString(8, p.getPaymentId());
+
+            boolean success = ps.executeUpdate() > 0;
+            if (success) System.out.println("[PaymentDAO] Payment updated: " + p.getPaymentId());
+            return success;
+
+        } catch (SQLException e) {
+            System.err.println("[PaymentDAO] updatePayment() error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // ---------------------------------------------------------------
+// DELETE — Remove a payment record
+// ---------------------------------------------------------------
+    public boolean deletePayment(String paymentId) {
+        String sql = "DELETE FROM Payment WHERE Payment_ID = ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, paymentId);
+            boolean success = ps.executeUpdate() > 0;
+            if (success) System.out.println("[PaymentDAO] Payment deleted: " + paymentId);
+            return success;
+
+        } catch (SQLException e) {
+            System.err.println("[PaymentDAO] deletePayment() error: " + e.getMessage());
+            return false;
+        }
+    }
 
     // ---------------------------------------------------------------
     // NEXT ID
