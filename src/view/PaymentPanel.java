@@ -113,7 +113,7 @@ public class PaymentPanel extends JPanel {
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         right.setBackground(UITheme.WHITE);
 
-        JButton addBtn  = UITheme.primaryButton("＋  Add Payment");
+        JButton addBtn  = UITheme.primaryButton("+  Add Payment");
         JButton editBtn = UITheme.outlineButton("✏  Edit");
         JButton delBtn  = UITheme.dangerButton("🗑  Delete");
         JButton viewBtn = UITheme.outlineButton("👁  View Details");

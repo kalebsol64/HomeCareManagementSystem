@@ -112,7 +112,7 @@ public class FeedbackPanel extends JPanel {
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         right.setBackground(UITheme.WHITE);
 
-        JButton addBtn  = UITheme.primaryButton("＋  Add Feedback");
+        JButton addBtn  = UITheme.primaryButton("+  Add Feedback");
         JButton editBtn = UITheme.outlineButton("✏  Edit");
         JButton delBtn  = UITheme.dangerButton("🗑  Delete");
         JButton viewBtn = UITheme.outlineButton("👁  View Details");

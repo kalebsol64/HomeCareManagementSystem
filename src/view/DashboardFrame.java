@@ -128,7 +128,7 @@ public class DashboardFrame extends JFrame {
 
         // App brand mini header
         JLabel brand = new JLabel("  🏥  HCMS", SwingConstants.LEFT);
-        brand.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        brand.setFont(UITheme.FONT_EMOJI);
         brand.setForeground(Color.WHITE);
         brand.setBorder(new EmptyBorder(8, 16, 20, 16));
         brand.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -180,7 +180,7 @@ public class DashboardFrame extends JFrame {
 
     private JButton sidebarButton(String text, String panelName) {
         JButton btn = new JButton(text);
-        btn.setFont(UITheme.FONT_SIDEBAR);
+        btn.setFont(UITheme.FONT_EMOJI);
         btn.setForeground(UITheme.SIDEBAR_TEXT);
         btn.setBackground(UITheme.BG_SIDEBAR);
         btn.setHorizontalAlignment(SwingConstants.LEFT);
