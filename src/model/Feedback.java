@@ -82,8 +82,9 @@ public class Feedback {
     /** Returns star string e.g. "★★★★☆" for rating 4 */
     public String getRatingStars() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i <= 5; i++)
-            sb.append(i <= rating ? "★" : "☆");
+        for (int i = 1; i <= 5; i++) {
+            sb.append(i <= rating ? "●" : "○");
+        }
         return sb.toString();
     }
 

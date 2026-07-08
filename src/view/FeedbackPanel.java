@@ -293,7 +293,11 @@ public class FeedbackPanel extends JPanel {
             details.add(lbl, gbc);
             gbc.gridx = 1; gbc.weightx = 0.62;
             JLabel val = new JLabel((String) rows[i][1]);
-            val.setFont(UITheme.FONT_BODY);
+            if ("Rating".equals(rows[i][0])) {
+                val.setFont(UITheme.FONT_EMOJI);   // uses Segoe UI Emoji
+            } else {
+                val.setFont(UITheme.FONT_BODY);
+            }
             val.setForeground(UITheme.TEXT_PRIMARY);
             if ("Satisfaction".equals(rows[i][0])) {
                 switch (f.getServiceSatisfaction() != null ? f.getServiceSatisfaction() : "") {

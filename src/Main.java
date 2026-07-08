@@ -7,10 +7,6 @@ import javax.swing.*;
  * Main.java
  * ----------
  * Application entry point.
- * Place this file in the root of src/ (same level as DAOTest.java).
- *
- * HOW TO RUN:
- *   Right-click Main.java → Run 'Main.main()'
  *
  * This opens the Login screen. From there the full app is accessible.
  *

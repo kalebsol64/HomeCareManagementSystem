@@ -52,6 +52,7 @@ public class UITheme {
     public static final Font FONT_SIDEBAR    = new Font("Segoe UI", Font.PLAIN, 13);
     public static final Font FONT_SIDEBAR_HD = new Font("Segoe UI", Font.BOLD,  11);
     public static final Font FONT_EMOJI      = new Font("Segoe UI Emoji", Font.PLAIN, 13);
+    public static final Font FONT_SYMBOL = new Font("Segoe UI Symbol", Font.PLAIN, 14);
     // ---------------------------------------------------------------
     // DIMENSIONS
     // ---------------------------------------------------------------
